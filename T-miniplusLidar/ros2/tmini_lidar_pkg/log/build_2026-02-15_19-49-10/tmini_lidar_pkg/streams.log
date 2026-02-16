@@ -1,0 +1,56 @@
+[0.066s] Invoking command in '/home/go/myproj/gemini/tmini_lidar_pkg/build/tmini_lidar_pkg': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/go/myproj/gemini/tmini_lidar_pkg -DCMAKE_INSTALL_PREFIX=/home/go/myproj/gemini/tmini_lidar_pkg/install/tmini_lidar_pkg
+[1.386s] -- The C compiler identification is GNU 11.4.0
+[2.152s] -- The CXX compiler identification is GNU 11.4.0
+[2.218s] -- Detecting C compiler ABI info
+[2.732s] -- Detecting C compiler ABI info - done
+[2.762s] -- Check for working C compiler: /usr/bin/cc - skipped
+[2.766s] -- Detecting C compile features
+[2.769s] -- Detecting C compile features - done
+[2.790s] -- Detecting CXX compiler ABI info
+[3.179s] -- Detecting CXX compiler ABI info - done
+[3.210s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[3.211s] -- Detecting CXX compile features
+[3.213s] -- Detecting CXX compile features - done
+[3.276s] -- Found ament_cmake: 1.3.12 (/opt/ros/humble/share/ament_cmake/cmake)
+[4.146s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[5.026s] -- Found rclcpp: 16.0.14 (/opt/ros/humble/share/rclcpp/cmake)
+[5.655s] -- Found rosidl_generator_c: 3.1.7 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[5.735s] -- Found rosidl_adapter: 3.1.7 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[5.856s] -- Found rosidl_generator_cpp: 3.1.7 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[5.997s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[6.237s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[6.760s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[6.804s] -- Found rmw_fastrtps_cpp: 6.2.8 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[7.644s] -- Found OpenSSL: /usr/lib/aarch64-linux-gnu/libcrypto.so (found version "3.0.2")  
+[7.969s] -- Found FastRTPS: /opt/ros/humble/include  
+[8.488s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[8.814s] -- Looking for pthread.h
+[9.188s] -- Looking for pthread.h - found
+[9.191s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[9.545s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+[9.551s] -- Found Threads: TRUE  
+[10.034s] -- Found sensor_msgs: 4.9.0 (/opt/ros/humble/share/sensor_msgs/cmake)
+[10.293s] -- Found ament_lint_auto: 0.12.14 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[10.947s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[10.947s] -- Configured cppcheck include dirs: 
+[10.948s] -- Configured cppcheck exclude dirs and/or files: 
+[10.977s] -- Added test 'lint_cmake' to check CMake code style
+[11.076s] -- Added test 'uncrustify' to check C / C++ code style
+[11.076s] -- Configured uncrustify additional arguments: 
+[11.128s] -- Added test 'xmllint' to check XML markup files
+[11.142s] -- Configuring done
+[11.176s] [31mCMake Error at CMakeLists.txt:26 (add_executable):
+[11.177s]   Cannot find source file:
+[11.177s] 
+[11.177s]     src/main.cpp
+[11.178s] 
+[11.178s]   Tried extensions .c .C .c++ .cc .cpp .cxx .cu .mpp .m .M .mm .ixx .cppm .h
+[11.179s]   .hh .h++ .hm .hpp .hxx .in .txx .f .F .for .f77 .f90 .f95 .f03 .hip .ispc
+[11.179s] 
+[11.179s] [0m
+[11.180s] [31mCMake Error at CMakeLists.txt:26 (add_executable):
+[11.181s]   No SOURCES given to target: tmini_node
+[11.181s] 
+[11.182s] [0m
+[11.183s] [0mCMake Generate step failed.  Build files cannot be regenerated correctly.[0m
+[11.214s] Invoked command in '/home/go/myproj/gemini/tmini_lidar_pkg/build/tmini_lidar_pkg' returned '1': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/go/myproj/gemini/tmini_lidar_pkg -DCMAKE_INSTALL_PREFIX=/home/go/myproj/gemini/tmini_lidar_pkg/install/tmini_lidar_pkg
