@@ -1,3 +1,9 @@
+/**
+This source was created by guiding Gemini, and was created to test 
+the simplest T-mini plus TOF Lidar before porting to ROS2.
+
+2026.02.14, Raymond
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,7 +16,7 @@
 #define Lidar_HeaderLSB 0xAA
 #define Lidar_HeaderMSB 0x55
 
-// 사용자님 구조체 정의
+// Define Structure
 typedef struct { uint16_t Intensity; uint16_t SI_dis; } DataSI_t;
 typedef struct {
     uint16_t PH, FSA, LSA, CS;
@@ -18,11 +24,11 @@ typedef struct {
     DataSI_t SI[360];
 } TminiPlus_MsgData_t;
 
-// 전역 변수
+// Global Variables
 uint8_t g_recvbuf[TempLen_Max];
 TminiPlus_MsgData_t timiplus_msg;
 
-// 사용자님 거리/각도 변환 로직
+// Distance / Angle Transformation
 int Get_Tminidis(uint16_t dis_temp) {
     return ((dis_temp >> 8) << 6) | ((dis_temp & 0x00FF) >> 2);
 }
