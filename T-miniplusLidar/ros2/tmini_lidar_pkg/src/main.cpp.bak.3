@@ -17,8 +17,10 @@ using namespace std::chrono_literals;
 class TMiniLidarNode : public rclcpp::Node {
 public:
     TMiniLidarNode() : Node("tmini_lidar_node"), step(0), si_index(0) {
+        // Publisher 설정
         publisher_ = this->create_publisher<sensor_msgs::msg::LaserScan>("scan", 10);
         
+        // 시리얼 포트 설정
         fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NONBLOCK);
         if (fd < 0) {
             RCLCPP_ERROR(this->get_logger(), "/dev/ttyUSB0 포트를 열 수 없습니다.");
@@ -33,6 +35,7 @@ public:
         tty.c_lflag = 0; tty.c_oflag = 0; tty.c_iflag = 0;
         tcsetattr(fd, TCSANOW, &tty);
 
+        // 리다 시작 명령 송신
         unsigned char start_cmd[] = {0xA5, 0x60};
         write(fd, start_cmd, 2);
 
@@ -40,13 +43,15 @@ public:
         full_ranges.assign(360, std::numeric_limits<float>::infinity());
         full_intensities.assign(360, 0.0f);
         
-        // 고속 수신을 위해 1ms 타이머 설정
+        // 데이터 수신 성능을 위해 1ms 주기로 버퍼 확인
         timer_ = this->create_wall_timer(1ms, std::bind(&TMiniLidarNode::process_serial, this));
         
-        RCLCPP_INFO(this->get_logger(), "Navigation 호환 모드 드라이버 시작 (Front = Index 180)");
+        RCLCPP_INFO(this->get_logger(), "상하좌우 반전 교정 드라이버가 시작되었습니다.");
     }
 
-    ~TMiniLidarNode() { if (fd >= 0) close(fd); }
+    ~TMiniLidarNode() {
+        if (fd >= 0) close(fd);
+    }
 
 private:
     void process_serial() {
@@ -85,18 +90,18 @@ private:
             float dist_m = (float)(((raw_dis >> 8) << 6) | ((raw_dis & 0x00FF) >> 2)) / 1000.0f;
             float intensity = (float)g_recvbuf[10 + i*3];
             
-            // 1. Lidar 원본 각도 계산
+            // 1. 기본 원본 각도
             double current_angle = s_ang + (angle_step * i);
 
-            // 2. 상하좌우 반전 보정 (User의 RViz 화면 최적화 수식)
+            // 2. 상하/좌우 동시 반전 보정 (180도 회전 + Mirror)
             double corrected_angle = 180.0 - current_angle;
 
-            // 3. -180 ~ 180 범위로 정규화
-            while (corrected_angle > 180.0) corrected_angle -= 360.0;
-            while (corrected_angle <= -180.0) corrected_angle += 360.0;
+            // 3. 0~360도 범위 정규화
+            while (corrected_angle >= 360.0) corrected_angle -= 360.0;
+            while (corrected_angle < 0.0) corrected_angle += 360.0;
 
-            // 4. 인덱스 매핑 (-180도가 0번, 0도가 180번, 180도가 359번)
-            int angle_idx = (int)(corrected_angle + 180.5) % 360;
+            // 4. 인덱스 매핑 (360개 데이터)
+            int angle_idx = (int)(corrected_angle + 0.5) % 360;
             
             if (dist_m > 0.12f && dist_m < 12.0f) {
                 full_ranges[angle_idx] = dist_m;
@@ -104,8 +109,10 @@ private:
             }
         }
 
+        // 새로운 한 바퀴 스캔이 시작될 때만 발행 (0도 통과 시점 확인)
         if (s_ang < last_angle) {
             publish_scan();
+            // 발행 후 버퍼 초기화 (잔상 제거)
             full_ranges.assign(360, std::numeric_limits<float>::infinity());
             full_intensities.assign(360, 0.0f);
         }
@@ -117,13 +124,14 @@ private:
         msg.header.stamp = this->get_clock()->now();
         msg.header.frame_id = "laser_frame";
 
-        // Navigation2 및 기존 Python 소스 표준에 맞춘 파라미터
-        msg.angle_min = -M_PI; // -180도
-        msg.angle_max = M_PI;  // 180도
+        msg.angle_min = 0.0;
+        msg.angle_max = 2.0 * M_PI;
         msg.angle_increment = (2.0 * M_PI) / 360.0;
         
+        // 자율주행(Nav2) 안정성을 위한 시간 파라미터 고정
         msg.scan_time = 0.1f;
         msg.time_increment = 0.0f; 
+        
         msg.range_min = 0.12f;
         msg.range_max = 12.0f;
 
